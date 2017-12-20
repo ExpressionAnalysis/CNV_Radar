@@ -40,12 +40,12 @@ params=getopt(spec)
 if(!is.null(params$help) | is.null(params$out) | is.null(params$sample) | is.null(params$roi) | is.null(params$control)) {
   cat("\nEither you asked for help or you are missing a required parameters\n\n")
   cat(paste("Usage: Rscript CNV_Radar.r
-				-- Required Parameters --
+  				-- Required Parameters --
 					[-O | --out] <Name of the output file> (Required)
 					[-S | --sample] <Name of the sample to process> (Required)
 					[-R | --roi] <Extension for the roiSummary> (Required)
 					[-C | --control] <Normal control created using CNV_Radar_create_control.r>(Required)
-				-- Optional Parameters -- 
+				-- Optional Parameters --
 					[-l | --threshLow] <Sensitivity threshold, the predictive score is less than params$threshLow, for detecting cnvs on the last iteration>(default=0.1)
 					[-h | --threshHigh] <Sensitivity threshold, Upper threshold for the Q score of a CNV event>(default=0.04)
 					[-m | --focal_thresh] <To resolve the focality of the cutpoint using a window of size +/- params$m around the cutpoint>(default=100)
@@ -92,6 +92,7 @@ if (params$highSensitivity) {
 }
 if(is.null(params$vcf)){params$vcf=NULL}
 if(is.null(params$printChrs)){params$printChrs="all"}  #default write out the whole genome image
+if(params$printChrs!="") params$printChrs <- strsplit(x = params$printChrs, split = ",")[[1]] # These are the chromosomes that will be plotted
 if(is.null(params$mmrfReport)){params$mmrfReport=F}
 if(is.null(params$minExpDepth)){params$minExpDepth=10}
 if(is.null(params$cex)){params$cex=0.35}
@@ -111,7 +112,6 @@ if(is.null(params$plotCNVs)){params$plotCNVs=T}
 
 params$wd <- dirname(substring(argString[grep("--file=", argString)], 8)) # get the base directory of that file
 params$wd <- gsub("^\\.", getwd(), params$wd) # if the path is relative, get the absolute path (necessary if the directory changes before sourcing)
-if(params$printChrs!="") params$printChrs <- strsplit(x = params$printChrs, split = ",")[[1]] # These are the chromosomes that will be plotted as jpeg files
 
 source(file.path(params$wd, "CNV_Radar_functions.r")) # Source the helper functions
 
@@ -119,7 +119,7 @@ load(file = params$control) # Load in the normal control created using CNV_ROI_f
 
 if(!exists("RGP")) RGP <- NULL # Relative genomic position is used for
 
-vcf <- list(VarPROWL=".all_snv.vcf.gz", GATK=".unifiedGenotyper_5g.snpEFF.vcf.gz") # This is the end of the file name for the vcf files
+vcf <- list(VarPROWL=".all_snv.vcf.gz", GATK=".unifiedGenotyper_5g.snpEFF.vcf.gz") # This is the file extension pattern for the vcf files
 if(is.null(params$vcf)) params$vcf <- vcf[[params$caller]]
 f <- readVCF(params, rgp=RGP) # Read in the vcf file
 if(params$writeFilteredVCF) write.table(x = f, file = paste0(params$out, "_vaf.txt"), quote = F, sep = "\t", row.names = F)
@@ -139,7 +139,6 @@ if(nrow(d)==nrow(control)) {
 rm(list = c("d", "argString", "vcf")) # Remove unnecessary objects
 control <- control[ order(ids$RGP), ] # Sort according to RGP
 ids <- ids[ order(ids$RGP), ] # Sort according to RGP
-# save.image("test.RData")
 
 depths <- control # "control" will be median centered (for non-CNV regions) and log transformed
 # Iteratively increase the sensitivity for identifying CNVs
@@ -164,7 +163,7 @@ for(i in 1:params$iter) {
   for(chr in unique(ids$Chr)[ grep("^[0-9]", unique(ids$Chr))]) { # Iterate across autosomal chromosomes
     if( (sum(ids$Chr==chr) > 10) & (sum(f$Chr==chr) > 10) ) {
       # Initialize a data frame that will be used as the input to the main function "getCpts"
-	  preds <- data.frame(Beg=ids$Beg[ ids$Chr==chr], End=ids$End[ ids$Chr==chr], RGP=ids$RGP[ ids$Chr==chr], fc=ids$fc[ ids$Chr==chr], obs=control[ids$Chr==chr,1], exp=params$fit$fitted.values[ids$Chr==chr], stringsAsFactors = F)
+      preds <- data.frame(Beg=ids$Beg[ ids$Chr==chr], End=ids$End[ ids$Chr==chr], RGP=ids$RGP[ ids$Chr==chr], fc=ids$fc[ ids$Chr==chr], obs=control[ids$Chr==chr,1], exp=params$fit$fitted.values[ids$Chr==chr], stringsAsFactors = F)
       # Use a spline to smooth the allele frequency and fold change data
       params$cknots <- pmax(20, round(sum(f$Chr==chr)/params$smooth)) # Scale the number of knots used to the size of the chromosome
       # preds$afv is a metric for deviation from 0.5 in variant allele frequency
