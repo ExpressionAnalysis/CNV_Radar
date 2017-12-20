@@ -1,0 +1,36 @@
+# COPYRIGHT AND PERMISSION NOTICE
+# Q2 Solutions Software
+# Copyright (C) 2017 Q2 Solutions
+# All rights reserved.
+# Q2 Solutions and the developers (Developers) of CNV_Radar (Software) give recipient (Recipient)
+# and Recipient's Institution (Institution) permission to use and copy the software in source and binary
+# forms, with or without modification for non-commercial purposes only provided that the following
+# conditions are met:
+# 1)	All copies of Software in binary form and/or source code, related documentation and/or
+# other materials provided with the Software must reproduce and retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+# 2)	Recipient and Institution shall not distribute Software to any third parties.
+# 3)	The Software is provided As Is. The Developers can not guarantee the provision of technical
+# support or consultation for the Software. Recipient may provide the Developers with feedback on the
+# use of the Software in their research at that time.  The Developers and Q2 Solutions are permitted to use any
+# information Recipient provides in making changes to the Software.
+# 4)	Recipient acknowledges that the Developers, Q2 Solutions and its licensees may develop modifications to
+# Software that may be substantially similar to Recipient's modifications of Software, and that the
+# Developers, Q2 Solutions and its licensees shall not be constrained in any way by Recipient in Q2 Solutions's
+# or its licensees' use or management of such modifications. Recipient acknowledges the right of the Developers
+# and Q2 Solutions to prepare and publish modifications to Software that may be substantially similar or
+# functionally equivalent to your modifications and improvements, and if Recipient or Institution
+# obtains patent protection for any modification or improvement to Software, Recipient and Institution
+# agree not to allege or enjoin infringement of their patent by the Developers, Q2 Solutions or any of Q2 Solutions's
+# licensees obtaining modifications or improvements to Software from the Q2 Solutions or the Developers.
+# 5)	Recipient and Developer will acknowledge in their respective publications the contributions made
+# to each other's research involving or based on the Software. The current citations for Software are:
+#   <None yet, but citations for journal/website/github go here>
+#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND Q2 SOLUTIONS "AS IS" AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR Q2 SOLUTIONS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
