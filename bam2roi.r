@@ -30,6 +30,8 @@ usage <- paste("Options:
 spec <- matrix(c(
   'bam',              'b', 1, "character",
   'bed',              'd', 1, "character",
+  'func',             'f', 2, "character",
+  'jobsch',           'j', 2, "character",
   'out',              'o', 2, "character",
   'verbose',          'z', 0, "logical",
   'help',             'h', 0, "logical"
@@ -47,6 +49,7 @@ if(length(args) < 1 | is.null(args$bam) | is.null(args$bed)  | !is.null(args$hel
 #Set default values
 if(is.null(args$out)){args$out <- getwd()}
 if(is.null(args$verbose)){args$verbose <- FALSE}
+if(is.null(args$jobsch)){args$jobsch <- ""}
 if(is.null(args$func)){args$func <- "median"}
 if(args$verbose){ print(args) }
 
@@ -75,7 +78,7 @@ cat(paste0("Generating the ROI summary for the bam file ", bam_name, "\n"))
 cat(paste0("The roi is defined by ", args$bed, "\n"))
 
 cmd <- paste0("bedtools intersect -a ", args$bam, " -b ", args$bed, " | bedtools genomecov -bga -ibam stdin | bedtools intersect -wao -a stdin -b ", args$bed,"  | awk '($5!=\".\") {print $5\"_\"$6\"_\"$7,$4,$8}' /dev/stdin > ", file.path(args$out, gsub(".bam", "_roi.txt", bam_name)) )
-system(command = cmd, wait = T)
+system(command = paste(args$jobsch, cmd), wait = T)
 
 df <- fread(input = file.path(args$out, gsub(".bam", "_roi.txt", bam_name)), sep = ' ', header = F, stringsAsFactors = F)
 setnames( df, c("id", "depth", "count") )
