@@ -25,7 +25,7 @@ First make sure that the dependencies are installed and then generate an ROI sum
 ```Rscript ~/git_clone/CNV_Radar/CNV_Radar.r -C /Projects/SMM/normals/CNV_SSV6_control.RData -S /Projects/SMM/Tumors/Sample1 -R _roiSummary.txt  --mmrfReport -O /Projects/SMM/Tumors --includeScore --highSensitivity```
 
 ### Optional creation of ROI dendrograms:
-```Rscript ~/git_clone/CNV_Radar/CreateROI_dendrograms.r --bdir=/Projects/SMM/normals/ --ds=SMM_normal```
+```Rscript ~/git_clone/CNV_Radar/CreateROI_dendrograms.r --bdir /Projects/SMM/normals/ --ds SMM_normal```
 
 ## Outputs
 There are two primary outputs from the tool: genomic plots in jpeg format and a <--out>.tsv output
