@@ -8,10 +8,10 @@
 # Description: Create the ROI summary from a bam file
 #
 # Provides:
-# Base Image: ea_base
-# Build Cmd: docker build --rm -t ea-pipeline.quintiles.net/cnvradar:v1.0.0 -f cnv_radar.Dockerfile .
-# Pull Cmd: docker pull ea-pipeline.quintiles.net/cnvradar:v1.0.0
-# Run Cmd: docker run --rm -v ${PWD}:/data -w /data ea-pipeline.quintiles.net/cnvradar:v1.0.0 /bin/bash -c ""
+# Base Image: Ubuntu 16.05
+# Build Cmd: docker build --rm -t eagenomics/cnvradar:v1.2.0 -f cnv_radar.Dockerfile .
+# Pull Cmd: docker pull eagenomics/cnvradar:v1.2.0
+# Run Cmd: docker run --rm -v ${PWD}:/data -w /data eagenomics/cnvradar:v1.2.0 /bin/bash -c ""
 #################################################################
 
 FROM ubuntu:16.04
@@ -130,15 +130,12 @@ ENV GRCH37_VERSION 75
 #    wget --no-check-certificate ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh37p13/VCF/All_20180423.vcf.gz.tbi && \
 #    wget --no-check-certificate ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh37p13/VCF/All_20180423.vcf.gz.md5 && \
 #    md5sum --check All_20180423.vcf.gz.md5 && \
-#    rename 's/All_20180423/dbSnp/g' * && \
 #    mkdir -p /usr/local/bin/snpEff/db/GRCh38/dbSnp && \
 #    cd /usr/local/bin/snpEff/db/GRCh38/dbSnp && \
 #    wget --no-check-certificate ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz && \
 #    wget --no-check-certificate ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz.tbi && \
 #    wget --no-check-certificate ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz.md5 && \
 #    md5sum --check All_20180418.vcf.gz.md5 && \
-#    rename 's/All_20180418/dbSnp/g' *
-
 
 #----------------------------------------------------------------
 # Copy over analysis scripts
