@@ -1,5 +1,4 @@
-#!/usr/bin/env Rscript
-
+#!/usr/bin/Rscript
 rm(list=ls())
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +18,7 @@ usage <- paste("Options:
                 [-d | --bed] < Path to the bed file describing the capture region of interest > (Character)
                Optional Parameters:
                 [-f | --func] < Function to calculate the ROI summary depth >(mean or median, Default='median')
-                [-j | --jobsch] < Name of the job scheduler for parallel processing > (Character, Default='')
+                [-j | --jobsch] < Prefix to use before the command when using a job scheduler> (Character, Default='')
                 [-o | --out] < Path to the output directory > (Character, Default=getwd())
                Optional Flags:
                 [-z | --verbose] < Print additional criteria for debug purposes >(Default=FALSE)
@@ -71,16 +70,40 @@ if(args$func %in% c("mean", "median")){
 
 start.timestamp <- timestamp()
 
-bam_name <-  strsplit(args$bam,"/")[[1]][length(strsplit(args$bam,"/")[[1]])]
+bam_name <-  basename(args$bam)
 
 cat(paste0("Processing began at ", start.timestamp, "\n"))
 cat(paste0("Generating the ROI summary for the bam file ", bam_name, "\n"))
 cat(paste0("The roi is defined by ", args$bed, "\n"))
 
-cmd <- paste0("bedtools intersect -a ", args$bam, " -b ", args$bed, " | bedtools genomecov -bga -ibam stdin | bedtools intersect -wao -a stdin -b ", args$bed,"  | awk '($5!=\".\") {print $5\"_\"$6\"_\"$7,$4,$8}' /dev/stdin > ", file.path(args$out, gsub(".bam", "_roi.txt", bam_name)) )
+# The awk statement only holds if you use a three column bedfile
+if ( length(strsplit(readLines(file(args$bed, "r"), n=1), "\t")[[1]]) != 3){
+  # Cut it to only the first three columns and give it a unique name
+  bedfile_cleanup <- T
+  cat(paste0("Restricting the bedfile ", args$bed, " to only three columns\n"))
+  cmd <- sprintf("cut -f1-3 %s > %s", args$bed, gsub("bam", "three_column.bed", bam_name))
+  system(command = cmd, wait=T)
+  args$bed <- gsub("bam", "three_column.bed", bam_name)
+} else {
+  bedfile_cleanup <- F
+  cat(paste0("The bedfile ", args$bed, " has only three columns\n"))
+}
+
+cmd1 <- sprintf("bedtools intersect -a %s -b %s", args$bam, args$bed)
+cmd2 <- sprintf("bedtools genomecov -bga -ibam stdin")
+cmd3 <- sprintf("bedtools intersect -wao -a stdin -b %s", args$bed )
+cmd4 <- sprintf('awk \'($5!=".") {print $5"_"$6"_"$7,$4,$8}\' /dev/stdin')
+outname <- file.path(args$out, gsub(".bam", "_roi.txt.gz", bam_name))
+
+cmd <- sprintf("%s | %s | %s |%s | gzip > %s ", cmd1, cmd2, cmd3, cmd4, outname)
 system(command = paste(args$jobsch, cmd), wait = T)
 
-df <- fread(input = file.path(args$out, gsub(".bam", "_roi.txt", bam_name)), sep = ' ', header = F, stringsAsFactors = F)
+if (bedfile_cleanup){
+  cmd <- sprintf("rm %s", args$bed)
+  system(command = cmd, wait=F)
+}
+
+df <- fread(input = file.path(args$out, paste0(gsub(".bam", "_roi.txt", bam_name),".gz")), sep = ' ', header = F, stringsAsFactors = F)
 setnames( df, c("id", "depth", "count") )
 
 if (tolower(args$func) == "mean"){

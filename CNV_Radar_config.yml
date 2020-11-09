@@ -1,0 +1,29 @@
+# Number of iterations for reweighting
+iter: 3
+# Number of knots, max of 20 or the length of the chromosome/params$smooth per chromosome
+smooth: 4
+# If the difference of the log2FC between two adjacent points are less than params$collapse then merge into one call
+collapse: 0.1
+# Minimum depth required to call a variant
+minVarDepth: 25
+# Minimum predicted depth required to call a CNV event
+minExpDepth: 10
+# To resolve the focality of the cutpoint using a window of size +/- params$m around the cutpoint
+focal_thresh: 100
+# Sensitivity threshold, Upper threshold for the Q score of a CNV event
+threshHigh: 0.04
+# Sensitivity threshold, the predictive score is less than params$threshLow, for detecting cnvs on the last iteration
+threshLow: -0.1
+# For a called CNV event, to call an LOH event the log2 fold change must be greater than params$theshFC_Low
+threshFC_Low: -0.25
+# For a called CNV event, to call an LOH event the log2 fold change must be greater than params$theshFC_High
+threshFC_High: 0.2
+# Lower heterozygous allele frequency threshold for calling an LOH event in a 'neutral' region
+LOHthresh: 0.05
+# Minimum CNV event length threshold in bases for calling an LOH event in a 'neutral' region
+LOHminLength: 2000
+
+overlap:
+    # Remove redundant breakpoints, if there is params$overlap in raw fold change estimates between adjacent regions
+    HIGH_SENSITIVITY: 0.2
+    STANDARD_SENSITIVITY: 0.1
