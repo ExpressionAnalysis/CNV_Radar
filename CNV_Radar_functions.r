@@ -94,8 +94,10 @@ readVCF <- function(fileName, filter_common = params$useAllVars) {
   # Filter out complex variants
   complex_vars <- grep(pattern = ",", x = vcf$ALT)
   add_to_log(lvl = "debug", func = "readVCF", message = paste(length(complex_vars), "complex variants to remove from VCF"))
-  vcf <- vcf[-complex_vars, ]
-  
+  if (length(complex_vars) > 0){
+    vcf <- vcf[-complex_vars, ]
+  }
+    
   # Filter out INDELs and retain only SNVs
   only_snps <- nchar(vcf$REF)==1 & nchar(vcf$ALT)==1
   add_to_log(lvl = "debug", func = "readVCF", message = paste(sum(!only_snps), "indels to remove from VCF"))
