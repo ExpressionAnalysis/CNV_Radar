@@ -211,8 +211,8 @@ docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscrip
 
 * Required arguments
 ```
--b DIR	The path of the directory that has all sample ROI summaries created in step 1
--d 	Output file name to which '.dendrogram_all.jpeg' will be appended
+-i DIR	The path of the directory that has all sample ROI summaries created in step 1
+-o 	Output file name to which '.dendrogram_all.jpeg' will be appended
 ```
 * Optional arguments
 ```
