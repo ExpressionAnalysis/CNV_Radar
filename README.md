@@ -125,7 +125,7 @@ The example usage provided here utilize the provided docker. If you chose to do 
 Usage: 
 docker pull <docker repo>/cnvradar:v1.2.0; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNV_Radar/bam2roi.r -b <bam file>.bam -d <bed file>.bed -z >> bam2roi.log 2>&1
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/bam2roi.r -b <bam file>.bam -d <bed file>.bed -z >> bam2roi.log 2>&1
 ```
 
 * Required arguments
@@ -159,7 +159,7 @@ For required and optional parameters, please view the official SnpSift documenta
 ```
 docker pull <docker repo>/cnvradar:v1.2.0; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNV_Radar/CNV_Radar_create_control.r --directory /data -r <Suffix to identify ROI summaries files> >> create_normal_cohort.log 2>&1"
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar_create_control.r --directory /data -r <Suffix to identify ROI summaries files> >> create_normal_cohort.log 2>&1"
 ```
 
 * Required arguments
@@ -177,7 +177,7 @@ docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscrip
 ```
 docker pull <docker repo>/cnvradar:v1.2.0; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNV_Radar/CNV_Radar.r -c <Control Cohort>.RData -r <tumor sample ROI Summary>.txt -v <tumor sample annotated VCF>.vcf.gz -G 
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar.r -c <Control Cohort>.RData -r <tumor sample ROI Summary>.txt -v <tumor sample annotated VCF>.vcf.gz -G 
 ```
 
 * Required arguments
@@ -206,7 +206,7 @@ docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscrip
 ```
 docker pull <docker repo>/cnvradar:v1.2.0
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNV_Radar/CreateROI_dendrograms.r -b /data -d <Output name> -r .roiSummary.txt
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CreateROI_dendrograms.r -b /data -d <Output name> -r .roiSummary.txt
 ```
 
 * Required arguments
