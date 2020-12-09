@@ -197,26 +197,26 @@ gunzip VCRome_2_1_hg19_primary_targets.bed.gz
 
 cd ~/CNVRadar_vignette/samples
 docker pull eagenomics/cnvradar:v1.2.0; 
-for X in *.bam; do docker run --rm -v ${PWD}:/data -v ~/CNVRadar_vignette/supporting_files:/supporting_files -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/bam2roi.r -b $X -d /supporting_files/VCRome_2_1_hg19_primary_targets.bed -z >> ${X%bam}bam2roi.log 2>&1; done
+for X in *.bam; do docker run --rm -v ${PWD}:/data -v ~/CNVRadar_vignette/supporting_files:/supporting_files -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/bam2roi.r -b $X -d /supporting_files/VCRome_2_1_hg19_primary_targets.bed -z >> ${X%bam}bam2roi.log 2>&1; done
 
 ```
 
 #### Create the reference panel from the normal samples
 ```
 cd ~/CNVRadar_vignette/samples
-docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNV_Radar_create_control.r --directory /data -r N-WEX_roiSummary.txt >> create_normal_cohort.log 2>&1
+docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar_create_control.r --directory /data -r N-WEX_roiSummary.txt >> create_normal_cohort.log 2>&1
 ```
 
 #### Call CNVs
 ```
 cd ~/CNVRadar_vignette/samples
-for X in *-T-WEX_roiSummary.txt; do docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNV_Radar.r -G -D -c /data/cnvradar_normal_cohort.RData -r $X -v ${X%_roiSummary.txt}.single_sample_ann.vcf.gz > ${X%_roiSummary.txt}.CNVRadar.log 2>&1; done
+for X in *-T-WEX_roiSummary.txt; do docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar.r -G -D -c /data/cnvradar_normal_cohort.RData -r $X -v ${X%_roiSummary.txt}.single_sample_ann.vcf.gz > ${X%_roiSummary.txt}.CNVRadar.log 2>&1; done
 ```
 
 #### Create the sample dendrogram
 ```
 cd ~/CNVRadar_vignette/samples
-docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CreateROI_dendrograms.r --indir /data -o TCRB_sample_dendrogram -r _roiSummary.txt > sample_dendrogram.log 2>&1
+docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CreateROI_dendrograms.r --indir /data -o TCRB_sample_dendrogram -r _roiSummary.txt > sample_dendrogram.log 2>&1
 ```
 
 ## Explore the data
