@@ -33,9 +33,9 @@ FROM ubuntu:16.04
 # Container Metadata
 #----------------------------------------------------------------
 LABEL base.image="ubuntu:16.04"
-LABEL version="1.1"
+LABEL version="2"
 LABEL software="CNVRadar, bedtools, snpEff, snpSift"
-LABEL software.version="1.2.0"
+LABEL software.version="1.2.1"
 LABEL about.summary="a copy number variant detection algorithm from Expression Analysis"
 LABEL license="https://github.com/ExpressionAnalysis/CNV_Radar/blob/master/LICENSE.txt"
 LABEL about.tags="Genomics"
