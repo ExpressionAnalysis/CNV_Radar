@@ -13,7 +13,7 @@
 # Software Version: 2.29.2
 #
 # Software: CNV Radar
-# Software Version: 1.2.0
+# Software Version: 1.2.1
 #
 # Description: Create the ROI summary from a bam file
 # 	       Create the reference panel
@@ -22,9 +22,9 @@
 #
 # Provides:
 # Base Image: Ubuntu 16.04
-# Build Cmd: docker build --rm -t eagenomics/cnvradar:v1.2.0 -f cnv_radar.Dockerfile .
-# Pull Cmd: docker pull eagenomics/cnvradar:v1.2.0
-# Run Cmd: docker run --rm -v ${PWD}:/data -w /data eagenomics/cnvradar:v1.2.0 /bin/bash -c ""
+# Build Cmd: docker build --rm -t eagenomics/cnvradar:v1.2.1 -f cnv_radar.Dockerfile .
+# Pull Cmd: docker pull eagenomics/cnvradar:v1.2.1
+# Run Cmd: docker run --rm -v ${PWD}:/data -w /data eagenomics/cnvradar:v1.2.1 /bin/bash -c ""
 #################################################################
 
 FROM ubuntu:16.04
@@ -33,9 +33,9 @@ FROM ubuntu:16.04
 # Container Metadata
 #----------------------------------------------------------------
 LABEL base.image="ubuntu:16.04"
-LABEL version="1"
+LABEL version="1.1"
 LABEL software="CNVRadar, bedtools, snpEff, snpSift"
-LABEL software.version="1.0.0"
+LABEL software.version="1.2.0"
 LABEL about.summary="a copy number variant detection algorithm from Expression Analysis"
 LABEL license="https://github.com/ExpressionAnalysis/CNV_Radar/blob/master/LICENSE.txt"
 LABEL about.tags="Genomics"
@@ -55,6 +55,7 @@ RUN apt-get -qq update && apt-get -y upgrade && \
     wget \
     bzip2 \
     unzip \
+    htslib \
     libz-dev \
     libbz2-dev \
     liblzma-dev \
