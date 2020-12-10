@@ -57,7 +57,7 @@ We have provided a docker for running CNV Radar
 ## Data source
 The Baylor College of Medicine Human Genome Sequencing Center (HGSC) has made a great open access dataset available from participants in Texas. In a pilot Open Access (OA) project from the CPRIT-funded Texas Cancer Research Biobank (TCRB), many Texas cancer patients were willing to openly share genomic data from tumor and normal matched pair specimens. For the first time, genetic data from **seven** human cancer cases with matched normal are freely available without requirement for data use agreements nor any major restriction except that end users cannot attempt to re-identify the participants.
 
-We are going to use this amazing resource to for this vignette. The data source is described in a 2016 publication in Nature. Information about sequencing can be found here: http://txcrb.org/sequencing.html. 
+We are going to use this amazing resource to for this vignette. The data source is described in a 2016 publication in Nature. Information about sequencing can be found here: ~~http://txcrb.org/sequencing.html~~. **(Update, as of 09DEC2020 it seems like the txcrb.org site doesn't point to the TCRB)**
 
 ```
 Specimens were sequenced on Illumina HiSeq machines, with 100 base-pair paired-end reads, to a depth of approximately 200x over the exonic regions. The exome capture design was VCRome 2.1 (see HGSC VCRome Design), supplied by NimbleGen. Mapping was to human reference build 19, verson "GRCh37-lite", using BWA(Burrows-Wheeler Aligner) subsequent base-quality recalibration and local realignment around known indel sites was performed by GATK. See the individual file metadata or BAM headers for exceptions, version numbers, and/or extra information.
@@ -66,11 +66,17 @@ Specimens were sequenced on Illumina HiSeq machines, with 100 base-pair paired-e
 Becnel, L., Pereira, S., Drummond, J. et al. An open access pilot freely sharing cancer genomic data from participants in Texas. Sci Data 3, 160010 (2016). https://doi.org/10.1038/sdata.2016.10 
 
 #### Retrieving the Sequencing Data
-* From a web browser navigate to the webpage for the Baylor College of Medine HGSC (https://www.hgsc.bcm.edu/)
-* Scroll down to the section detailing the Open Access Pilot for the TCRB and click the link for Access data or use this link http://txcrb.org/open.html
-* Follow the instructions for setting up an account 
-* Log in to the sftp with your credentials: https://hgsc-sftp1.hgsc.bcm.tmc.edu/webclient/Login.xhtml
-* Follow the sites's instructions to download the whole exome sequencing data to a linux environment capable of running dockers
+
+**UPDATE, as of 09DEC2020 it seems like the link to txcrb.org/open.html doesn't point to the biobank anymore, however the FTP listed below might still work if you can get an account setup??? However, the data appears to be available on DNA Nexus https://dnanexus.github.io/tcrb-data/**
+
+```diff
+- From a web browser navigate to the webpage for the Baylor College of Medine HGSC (https://www.hgsc.bcm.edu/)
+- Scroll down to the section detailing the Open Access Pilot for the TCRB and click the link for Access data or use this link http://txcrb.org/open.html
+- Follow the instructions for setting up an account 
+- Log in to the sftp with your credentials: https://hgsc-sftp1.hgsc.bcm.tmc.edu/webclient/Login.xhtml
+- Follow the sites's instructions to download the whole exome sequencing data to a linux environment capable of running dockers
+```
+
 ```
 cd ~/
 mkdir -p CNVRadar_vignette/samples
@@ -80,6 +86,9 @@ cd CNVRadar_vignette/samples
 # Convert compression type from bz2 to gz that is compatible with BWA
 for X in *.fastq.bz2; do bunzip2 -c < $X | gzip -c > ${X%.bz2}.gz; done
 ```
+
+
+
 ## Required inputs and supporting file
 
 #### Retrieve the definitions for the captured regions
@@ -197,26 +206,26 @@ gunzip VCRome_2_1_hg19_primary_targets.bed.gz
 
 cd ~/CNVRadar_vignette/samples
 docker pull eagenomics/cnvradar:v1.2.0; 
-for X in *.bam; do docker run --rm -v ${PWD}:/data -v ~/CNVRadar_vignette/supporting_files:/supporting_files -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/bam2roi.r -b $X -d /supporting_files/VCRome_2_1_hg19_primary_targets.bed -z >> ${X%bam}bam2roi.log 2>&1; done
+for X in *.bam; do docker run --rm -v ${PWD}:/data -v ~/CNVRadar_vignette/supporting_files:/supporting_files -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/bam2roi.r -b $X -d /supporting_files/VCRome_2_1_hg19_primary_targets.bed -z >> ${X%bam}bam2roi.log 2>&1; done
 
 ```
 
 #### Create the reference panel from the normal samples
 ```
 cd ~/CNVRadar_vignette/samples
-docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNV_Radar_create_control.r --directory /data -r N-WEX_roiSummary.txt >> create_normal_cohort.log 2>&1
+docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar_create_control.r --directory /data -r N-WEX_roiSummary.txt >> create_normal_cohort.log 2>&1
 ```
 
 #### Call CNVs
 ```
 cd ~/CNVRadar_vignette/samples
-for X in *-T-WEX_roiSummary.txt; do docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNV_Radar.r -G -D -c /data/cnvradar_normal_cohort.RData -r $X -v ${X%_roiSummary.txt}.single_sample_ann.vcf.gz > ${X%_roiSummary.txt}.CNVRadar.log 2>&1; done
+for X in *-T-WEX_roiSummary.txt; do docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar.r -G -D -c /data/cnvradar_normal_cohort.RData -r $X -v ${X%_roiSummary.txt}.single_sample_ann.vcf.gz > ${X%_roiSummary.txt}.CNVRadar.log 2>&1; done
 ```
 
 #### Create the sample dendrogram
 ```
 cd ~/CNVRadar_vignette/samples
-docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CreateROI_dendrograms.r --indir /data -o TCRB_sample_dendrogram -r _roiSummary.txt > sample_dendrogram.log 2>&1
+docker run --rm -v ${PWD}:/data -w /data -t eagenomics/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CreateROI_dendrograms.r --indir /data -o TCRB_sample_dendrogram -r _roiSummary.txt > sample_dendrogram.log 2>&1
 ```
 
 ## Explore the data
