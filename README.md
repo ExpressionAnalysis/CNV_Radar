@@ -55,7 +55,7 @@ This package was tested using R version 3.3.2 and bedtools v2.24.0 on the linux 
 #### 1) Docker
 We have provided a docker that will allow you to run CNV Radar.
 ```
-docker pull eagenomics/cnvradar:v1.2.0
+docker pull eagenomics/cnvradar:v1.2.1
 ```
 
 or
@@ -123,9 +123,9 @@ The example usage provided here utilize the provided docker. If you chose to do 
 #### 1) Generate a summary of the depths across the regions of interest (ROI) for each sample
 ```
 Usage: 
-docker pull <docker repo>/cnvradar:v1.2.0; 
+docker pull <docker repo>/cnvradar:v1.2.1; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/bam2roi.r -b <bam file>.bam -d <bed file>.bed -z >> bam2roi.log 2>&1
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.1 Rscript /opt/CNVRadar/bam2roi.r -b <bam file>.bam -d <bed file>.bed -z >> bam2roi.log 2>&1
 ```
 
 * Required arguments
@@ -146,9 +146,9 @@ docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscrip
 #### 2) Annotate a VCF to identify 'common' SNPs
 ```
 Usage: 
-docker pull <docker repo>/cnvradar:v1.2.0; 
+docker pull <docker repo>/cnvradar:v1.2.1; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -v <path to downloaded dbSNP annotation directory>:/annotations -w /data -t <docker repo>/cnvradar:v1.2.0 java -jar /usr/local/bin/snpEff/SnpSift.jar annotate /annotations/All_20180423.vcf.gz <VCF file> | bgzip > ${X%.vcf.gz}_ann.vcf.gz
+docker run --rm -v ${PWD}:/data -v <path to downloaded dbSNP annotation directory>:/annotations -w /data -t <docker repo>/cnvradar:v1.2.1 java -jar /usr/local/bin/snpEff/SnpSift.jar annotate /annotations/All_20180423.vcf.gz <VCF file> | bgzip > ${X%.vcf.gz}_ann.vcf.gz
 ```
 
 For required and optional parameters, please view the official SnpSift documentation
@@ -157,9 +157,9 @@ For required and optional parameters, please view the official SnpSift documenta
 
 #### 3) Create a control dataset using normal samples:
 ```
-docker pull <docker repo>/cnvradar:v1.2.0; 
+docker pull <docker repo>/cnvradar:v1.2.1; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar_create_control.r --directory /data -r <Suffix to identify ROI summaries files> >> create_normal_cohort.log 2>&1"
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.1 Rscript /opt/CNVRadar/CNV_Radar_create_control.r --directory /data -r <Suffix to identify ROI summaries files> >> create_normal_cohort.log 2>&1"
 ```
 
 * Required arguments
@@ -175,9 +175,9 @@ docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscrip
 
 #### 4) Run CNV Radar:
 ```
-docker pull <docker repo>/cnvradar:v1.2.0; 
+docker pull <docker repo>/cnvradar:v1.2.1; 
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CNV_Radar.r -c <Control Cohort>.RData -r <tumor sample ROI Summary>.txt -v <tumor sample annotated VCF>.vcf.gz -G 
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.1 Rscript /opt/CNVRadar/CNV_Radar.r -c <Control Cohort>.RData -r <tumor sample ROI Summary>.txt -v <tumor sample annotated VCF>.vcf.gz -G 
 ```
 
 * Required arguments
@@ -204,9 +204,9 @@ docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscrip
 
 ### 5) Creation of ROI dendrograms (Optional):
 ```
-docker pull <docker repo>/cnvradar:v1.2.0
+docker pull <docker repo>/cnvradar:v1.2.1
 cd <working directory>
-docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.0 Rscript /opt/CNVRadar/CreateROI_dendrograms.r -b /data -d <Output name> -r .roiSummary.txt
+docker run --rm -v ${PWD}:/data -w /data -t <docker repo>/cnvradar:v1.2.1 Rscript /opt/CNVRadar/CreateROI_dendrograms.r -b /data -d <Output name> -r .roiSummary.txt
 ```
 
 * Required arguments

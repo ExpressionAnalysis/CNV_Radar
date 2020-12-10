@@ -55,7 +55,7 @@ RUN apt-get -qq update && apt-get -y upgrade && \
     wget \
     bzip2 \
     unzip \
-    htslib \
+    tabix \
     libz-dev \
     libbz2-dev \
     liblzma-dev \
@@ -65,7 +65,6 @@ RUN apt-get -qq update && apt-get -y upgrade && \
     apt-get clean && \
     apt-get autoremove && \
 	ln -s /usr/bin/python3 /usr/bin/python
-    # tabix
 
 #----------------------------------------------------------------
 # Setup Java
