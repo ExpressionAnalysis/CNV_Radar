@@ -192,7 +192,7 @@ ids$Chr <- gsub("^chr", "", ids$Chr, ignore.case = T, perl = T)
 #--------------------------------------------------------
 f_time <- proc.time()
 add_to_log(lvl = "debug", func = "readVCF", message = paste("Reading in the vcf file ", params$vcf ))
-f <- readVCF(fileName = params$vcf, filter_common = params$useAllVars)
+f <- readVCF(fileName = params$vcf, filter_common = params$useAllVars, depth_fields = params$depth)
 add_to_log(lvl = "debug", func = "readVCF", message = paste("VCF file", params$vcf, "with", nrow(f), "variants took", round((proc.time() - f_time)[['elapsed']] / 60,3), "minutes to read and parse"))
 rm(f_time)
 
