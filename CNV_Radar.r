@@ -29,9 +29,10 @@ usage <- paste("Usage: Rscript CNV_Radar.r
                [-r | --roi]              <Path to the ROI summary> (Required)
                [-v | --vcf]              <Path to the annotated vcf file>(Required)
                -- Optional Parameters -- 
-               [-f | --config]           <Path to the yaml formatted config file of model parameters> (Default = CNV_Radar_config.yml)
-               [-o | --outfile]          <Prefix for the output files> (default = The name of the vcf file up to but not indcluding the .vcf extension)
+               [-f | --config]           <Path to the yaml formatted config file of model parameters> (default = CNV_Radar_config.yml)
+               [-o | --outfile]          <Prefix for the output files> (default = The name of the vcf file up to but not including the .vcf extension)
                [-p | --outpath]          <Path to the directory to save the outputs> (default = current working directory)
+               [-d | --depth]            <Comma separated list of format field labels in the VCF file to sum to derive the total read depth> (default = 'DP')
                [-n | --printChrs]        <Comma separated list of Which chromosomes to plot>(default=all)
                [-x | --cex]              <Number indicating the amount by which plotting text and symbols should be scaled relative to the default of 1>(default=0.35)
                -- Optional Flags --   
@@ -53,6 +54,7 @@ usage <- paste("Usage: Rscript CNV_Radar.r
 spec <- matrix(c(	
   'control',          'c', 1, "character",
   'omitCNVcalls',     'C', 0, "logical",
+  'depth',            'd', 2, "character",
   'plotPredDepth',    'D', 0, "logical",
   'useAllVars',       'F', 0, "logical",
   'config',           'f', 2, "character",
@@ -99,6 +101,9 @@ if(is.null(params$outpath)){params$outpath = getwd()}
 if(is.null(params$useAllVars)){params$useAllVars = F}
 if(is.null(params$gatk)){params$gatk = F}
 if(is.null(params$sensitivity)){params$sensitivity = F}
+
+# Set defaults for optional VCF processing variables
+if(is.null(params$depth)){params$depth = "DP"}
 
 # Set defaults for optional plotting variables
 if(is.null(params$cex)){params$cex=0.35}
