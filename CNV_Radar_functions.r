@@ -53,7 +53,7 @@ extract_from_sample <- function(x, field_name, sname){
   return(z)
 }
 
-readVCF <- function(fileName, filter_common = params$useAllVars) {
+readVCF <- function(fileName, filter_common = params$useAllVars, depth_fields = params$depth) {
   
   # Check to see that the file exists
   if (!file.exists(fileName)){
@@ -111,14 +111,66 @@ readVCF <- function(fileName, filter_common = params$useAllVars) {
   vcf <- vcf[vcf$GT %in% het_genotypes,]
   
   # Extract out the depth at each variant position
-  vcf$DP <- as.numeric(apply(vcf, 1, function(x) extract_from_sample(x, field_name = "DP", sname = colnames(vcf)[10] )))
+  add_to_log(lvl="info", func="readVCF", message = paste0("Extracting the total read depth from the VCF reported in the fields: ", depth_fields ))
+  
+  depth_fields <- trimws(strsplit(depth_fields, ",")[[1]])
+  
+  # Check to see that the field exists
+  if (length(depth_fields) == 1){
+    add_to_log(lvl="info", func="readVCF", message = paste0("Single depth field supplied: ", depth_fields) )
+    
+    vcf$DP <- apply(vcf, 1, function(x) extract_from_sample(x, field_name = depth_fields, sname = colnames(vcf)[10]) )
+    
+    # Determine if the supplied field is a delimited list of depths
+    if ( all(grepl("[^0-9]", vcf$DP, ignore.case = T, perl = T)) ) {
+      
+      # Determine the delimiter character from the first row
+      #   this should be the same pattern for all rows
+      DP_delimiter <- gsub("[0-9]", "", vcf$DP[1], perl=T, ignore.case=T)
+      
+      # If that the only non-numeric character, then extract the depths
+      if ( length(DP_delimiter == 1) && !all(grepl(paste0("[^0-9",DP_delimiter,"]"), vcf$DP, ignore.case = T, perl = T)) ){
+        add_to_log(lvl="info", func="readVCF", message = paste0("Single depth field supplied: ", depth_fields, " is a '", DP_delimiter, "' separated list. Summing these values to produce the total read depth") )
+        vcf$DP <- sapply(vcf$DP, function(x) sum(as.numeric(strsplit(x, DP_delimiter)[[1]])))        
+      } else {
+        add_to_log(lvl="error", func="readVCF", message = paste0("Single depth field supplied: ", depth_fields, " does not have a recognizable pattern to determine the read depth") )
+        add_to_log(lvl="error", func="readVCF", message = paste0("Evaluate the values reported in the VCF for depth field(s): ", depth_fields) )
+        q(save = 'no', status = 1, runLast = F)
+      }
+    }
+    
+  } else if (length(depth_fields) > 1){
+    add_to_log(lvl="info", func="readVCF", message = paste0("Multiple depth fields supplied. Total read depth derived as the sum of these fields: ", paste(depth_fields, collapse=", ") ))
+    
+    read_depths <- matrix(nrow=nrow(vcf), ncol=length(depth_fields))
+    # Extract each field individually
+    for ( i in seq_along(depth_fields)){
+      read_depths[,i] <- as.numeric(apply(vcf, 1, function(x) extract_from_sample(x, field_name = depth_fields[i], sname = colnames(vcf)[10] )))
+    }
+    
+    if ( any(is.na(read_depths)) ){
+      add_to_log(lvl="error", func="readVCF", message = paste0("Non-numeric or Non-existant values reported in fields: ", paste(depth_fields, collapse=", "), ". Check VCF or supplied depth field names" ))
+      q(save = 'no', status = 1, runLast = F)
+    } else {
+      # Sum all of those fields and report it as the depth
+      vcf$DP <- apply(read_depths, 1, sum)   
+    }
+  }
+  
+  # Ensure the correct data format
+  vcf$DP <- as.numeric(vcf$DP)
+  
+  if ( any(is.na(vcf$DP)) ){
+    add_to_log(lvl="error", func="readVCF", message = paste0("There are missing read depth measurements. Check VCF or supplied depth field names" ))
+    q(save = 'no', status = 1, runLast = F)
+  }
   
   # Extract out the allele frequency
   vcf$AF <- as.numeric(apply(vcf, 1, function(x) extract_from_sample(x, field_name = "AF", sname = colnames(vcf)[10] )))
   
   if ( all(is.na(vcf$AF)) ){
     # The allele frequency wasn't there, attempting to calculate it using depths
-    # It is assumed that the AD column exists and lists the alleleic depths for the ref (first) and alt (last) alleles
+    # It is assumed that the AD column exists and lists the allelic depths for the ref (first) and alt (last) alleles
     #     separated by a comma
     vcf$AD <- apply(vcf, 1, function(x) extract_from_sample(x, field_name = "AD", sname = colnames(vcf)[10]))
     vcf$RefCnts <- as.numeric(sapply(strsplit(vcf$AD,","), `[`, 1))
